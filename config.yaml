@@ -1,0 +1,5 @@
+base_url: "https://httpbin.org"
+timeout: 30
+test_url: https://jsonplaceholder.typicode.com
+username: admin
+password: 123456
