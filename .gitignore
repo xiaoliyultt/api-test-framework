@@ -1,0 +1,4 @@
+test.log
+report.html
+.pytest_cache/
+__pycache__/
