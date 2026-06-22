@@ -13,6 +13,28 @@ post_schema = {
     "required" : ["userId", "id", "title", "body"]
 }
 
+posts_list_schema ={
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties":{
+            "userId" :{"type": "integer"},
+            "id" :{"type": "integer"},
+            "title": {"type": "string"},
+            "body": {"type": "string"}
+        },
+        "required": ["userId", "id", "title","body"]
+    }
+}
+
+error_schema={
+    "type": "object",
+    "properties":{
+        "error":{"type": "string"}
+
+    },
+    "required": ["error"]
+}
 
 # 这是一个 fixture，每个测试函数会自动接收它
 @pytest.fixture
@@ -69,3 +91,14 @@ def test_get_post_by_id(api,post_id):
 def test_api_response(api, endpoint,expected_status):
     response = api.get(endpoint)
     assert_response(response, expected_status)
+
+@pytest.mark.parametrize("endpoint, expected_status, schema",
+                         [("/posts/1",200, post_schema),
+                          ("/posts/999", 404, None), #None 表示不校验 Schema
+                         ("/invalid-path", 404, None),
+                          ("/posts", 200, posts_list_schema)])
+def test_api_with_schema(api, endpoint, expected_status, schema):
+    response= api.get(endpoint)
+    assert_response(response, expected_status)
+    if schema:
+        assert_schema(response, schema)
