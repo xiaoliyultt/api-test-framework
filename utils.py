@@ -1,6 +1,7 @@
 import yaml
 import requests
 import logging
+from jsonschema import validate
 
 def load_config():
     with open('config.yaml','r',encoding="utf-8") as f:
@@ -111,6 +112,15 @@ def  assert_response(response, expected_status_code):
 
     assert response.status_code ==expected_status_code , f"期望{expected_status_code},实际{response.status_code}"
 
+
+def assert_schema(response, schema):
+    try:
+        validate(instance=response.json(), schema=schema)
+        logger.info("JSON Schema 校验通过")
+        return True
+    except Exception as e :
+        logger.error(f"JSON Schema 校验失败： {e}")
+        raise AssertionError(f"Schema 校验失败： {e}")
 
 
 

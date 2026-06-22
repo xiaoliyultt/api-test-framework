@@ -1,5 +1,18 @@
 import pytest
-from utils import APIClient, assert_response
+from utils import APIClient, assert_response, assert_schema
+
+
+post_schema = {
+    "type" : "object",
+    "properties" : {
+        "userId" : {"type": "integer"},
+        "id": {"type": "integer"},
+        "title" : {"type": "string"},
+        "body": {"type": "string"}
+    },
+    "required" : ["userId", "id", "title", "body"]
+}
+
 
 # 这是一个 fixture，每个测试函数会自动接收它
 @pytest.fixture
@@ -13,6 +26,7 @@ def api():
 def test_get_single_post(api):
     response = api.get("/posts/1")
     assert_response(response, 200)
+    assert_schema(response, post_schema)
 
 # 测试2：GET 请求 - 获取帖子列表
 def test_get_all_posts(api):
